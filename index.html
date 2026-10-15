@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>独立开发者 · tickgold &amp; MeinaOS 官网原型</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232e6be6'/%3E%3Crect x='12' y='24' width='40' height='18' rx='9' fill='%23ffffff'/%3E%3Crect x='18' y='29' width='8' height='8' rx='4' fill='%232e6be6'/%3E%3Crect x='32' y='29' width='14' height='8' rx='4' fill='%232e6be6'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#ffffff; --soft:#f6f7f9; --soft2:#f0f2f5;
+  --ink:#1f2329; --ink2:#4e5969; --ink3:#8a93a6;
+  --line:#e7e8ec; --line2:#d9dce2;
+  --brand:#2e6be6; --brand-d:#255fd1; --brand-soft:#eef3fe;
+  --gold:#c08a1e; --gold-soft:#fbf3e2;
+  --up:#e5483b; --up-soft:#fdeeec; --down:#16a36b; --down-soft:#e9f7f1;
+  --r:18px;
+  --shadow:0 1px 2px rgba(20,30,50,.04),0 10px 28px rgba(20,30,50,.06);
+  --shadow-lg:0 4px 10px rgba(20,30,50,.05),0 20px 48px rgba(20,30,50,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,-apple-system,sans-serif;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:rgba(46,107,230,.18)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:6px}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.up{color:var(--up)} .down{color:var(--down)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ===== 导航 ===== */
+.site-nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.brand svg{width:22px;height:22px}
+.nav-links{display:none;gap:2px;margin-left:10px}
+.nav-links a{padding:7px 13px;border-radius:9px;font-size:14px;color:var(--ink2);transition:color .18s,background .18s}
+.nav-links a:hover{color:var(--brand);background:var(--brand-soft)}
+.nav-right{margin-left:auto}
+.btn-sm{padding:8px 15px;border-radius:10px;font-size:13px;font-weight:600;background:var(--ink);color:#fff;transition:background .18s,transform .15s}
+.btn-sm:hover{background:#000}
+
+/* ===== 按钮 ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 26px;border-radius:12px;font-size:15px;font-weight:600;transition:all .18s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover{background:var(--brand-d);box-shadow:0 8px 22px rgba(46,107,230,.28)}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line2)}
+.btn.ghost:hover{border-color:var(--brand);color:var(--brand);background:var(--brand-soft)}
+.btn.gold{background:var(--gold);color:#fff}
+.btn.gold:hover{background:#a87615;box-shadow:0 8px 22px rgba(192,138,30,.28)}
+.btn.sm{padding:10px 18px;font-size:14px}
+
+/* ===== Hero ===== */
+.hero{position:relative;text-align:center;padding:60px 0 76px;overflow:hidden}
+.hero::before{content:"";position:absolute;top:-300px;left:50%;transform:translateX(-50%);width:860px;height:480px;background:radial-gradient(closest-side,rgba(46,107,230,.10),transparent 72%);pointer-events:none}
+.hero::after{content:"";position:absolute;top:-160px;left:8%;width:360px;height:360px;background:radial-gradient(closest-side,rgba(192,138,30,.08),transparent 70%);pointer-events:none}
+.island-wrap{position:sticky;top:66px;z-index:30;display:flex;justify-content:center;padding:0 12px 30px;pointer-events:none;margin-bottom:14px}
+.hero h1{font-size:clamp(34px,5.4vw,56px);font-weight:700;line-height:1.18;letter-spacing:.5px;margin-bottom:18px}
+.hero h1 em{font-style:normal;color:var(--brand)}
+.hero .sub{max-width:640px;margin:0 auto 30px;color:var(--ink2);font-size:clamp(15px,2.1vw,17px)}
+.hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+.platform-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--ink3)}
+.platform-badges span{border:1px solid var(--line);border-radius:999px;padding:5px 13px;background:#fff}
+
+/* ===== 灵动岛（黑色实体，还原设备形态） ===== */
+.island{pointer-events:auto;background:#0b0c0f;border-radius:30px;width:min(430px,calc(100vw - 32px));box-shadow:0 22px 60px rgba(20,30,50,.28),0 2px 6px rgba(20,30,50,.18);overflow:hidden;transition:width .35s cubic-bezier(.22,1,.36,1)}
+.island.collapsed{width:min(330px,calc(100vw - 32px))}
+.island-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px;font-size:13px;color:#e8ecf3;cursor:pointer;user-select:none}
+.island-row .i-left{display:flex;align-items:center;gap:9px;font-weight:600}
+.i-dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 8px rgba(52,211,153,.8);flex:none}
+.i-pct{font-weight:700}
+.island .up{color:#ff7468} .island .down{color:#3ddc97}
+.island-expanded{display:none;padding:2px 16px 18px;animation:rise .3s cubic-bezier(.22,1,.36,1)}
+.island.open .island-expanded{display:block}
+.island.open .island-row{padding-bottom:10px}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.i-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#8a93a6;padding:6px 2px 10px}
+.badge-demo{border:1px solid rgba(255,255,255,.16);color:#b9c0cc;border-radius:999px;padding:2px 9px;font-size:11px}
+.i-list{display:grid;gap:8px;margin-bottom:15px}
+.i-row{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:9px 12px;font-size:13px}
+.i-row .nm{font-weight:600;min-width:0}
+.i-row .cd{color:#8a93a6;font-size:11px;margin-left:6px}
+.i-row .px{font-weight:700;font-size:14px}
+.i-row .chg{width:76px;text-align:right;font-weight:700}
+.i-actions{display:flex;gap:10px}
+.i-actions .btn{padding:11px 16px;font-size:14px;border-radius:11px;flex:1}
+.i-actions .btn.ghost{background:transparent;color:#e8ecf3;border-color:rgba(255,255,255,.2)}
+.i-actions .btn.ghost:hover{background:rgba(255,255,255,.1);color:#fff}
+
+/* ===== 区块通用 ===== */
+section{padding:74px 0}
+.soft{background:var(--soft)}
+.sec-head{max-width:640px;margin-bottom:36px}
+.sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.sec-head h2{font-size:clamp(26px,4vw,36px);font-weight:700;letter-spacing:.3px;line-height:1.22;margin-bottom:12px}
+.sec-head p{color:var(--ink2);font-size:15px}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.island,.island-expanded{transition:none;animation:none}}
+
+/* ===== 双子星产品卡 ===== */
+.twin-grid{display:grid;gap:22px;grid-template-columns:1fr}
+.twin{background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:28px;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s}
+.twin:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.twin-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.twin-logo{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+.twin-logo svg{width:22px;height:22px}
+.twin-logo.gold{background:var(--gold-soft)} .twin-logo.gold svg{stroke:var(--gold)}
+.twin-logo.blue{background:var(--brand-soft)} .twin-logo.blue svg{stroke:var(--brand)}
+.twin-name{font-size:19px;font-weight:700}
+.twin-status{margin-left:auto;font-size:12px;font-weight:600;border-radius:999px;padding:5px 12px;white-space:nowrap}
+.twin-status.done{background:var(--gold-soft);color:var(--gold)}
+.twin-status.beta{background:var(--brand-soft);color:var(--brand)}
+.twin-tag{font-size:16px;font-weight:600;margin-bottom:6px}
+.twin-desc{font-size:13.5px;color:var(--ink2);margin-bottom:16px}
+.twin-mock{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:16px}
+.twin .twin-cta{margin-top:auto}
+.twin .twin-cta .btn{width:100%}
+.mock-q{display:flex;align-items:center;justify-content:space-between;font-size:13px;padding:5px 2px}
+.mock-q .v{font-weight:700}
+.bubble{max-width:85%;font-size:13px;line-height:1.5;padding:10px 13px;border-radius:14px;margin-bottom:8px}
+.bubble.u{background:var(--brand);color:#fff;margin-left:auto;border-bottom-right-radius:5px}
+.bubble.b{background:#fff;border:1px solid var(--line);color:var(--ink);border-bottom-left-radius:5px}
+.check-list{list-style:none;display:grid;gap:9px;margin-bottom:20px}
+.check-list li{display:flex;gap:9px;align-items:center;font-size:14px;color:var(--ink2)}
+.check-list svg{width:17px;height:17px;flex:none;stroke:var(--brand)}
+.check-list.gold svg{stroke:var(--gold)}
+
+/* ===== 详情双栏 ===== */
+.detail-grid{display:grid;gap:30px;align-items:start}
+.feat-list{display:grid;gap:12px}
+.feat{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;transition:border-color .2s,box-shadow .2s}
+.feat:hover{border-color:var(--brand);box-shadow:var(--shadow)}
+.feat .ic{flex:none;width:40px;height:40px;border-radius:12px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center}
+.feat .ic svg{width:21px;height:21px;stroke:var(--brand)}
+.feat.gold .ic{background:var(--gold-soft)} .feat.gold .ic svg{stroke:var(--gold)}
+.feat h3{font-size:15.5px;font-weight:700;margin-bottom:3px}
+.feat p{font-size:13.5px;color:var(--ink2)}
+
+/* ===== 迷你行情窗口 ===== */
+.mini-ticker{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
+.mt-head{display:flex;gap:6px;padding:12px 12px 0;overflow-x:auto}
+.mt-tab{flex:none;padding:8px 13px;border-radius:9px;font-size:12.5px;color:var(--ink2);border:1px solid transparent}
+.mt-tab.on{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.mt-body{padding:18px 20px 10px;text-align:center}
+.mt-body .code{font-size:12px;color:var(--ink3);letter-spacing:1px}
+.mt-body .name{font-size:15px;font-weight:700;margin:2px 0 6px}
+.mt-body .price{font-size:36px;font-weight:800;line-height:1.1;color:var(--ink)}
+.mt-body .chg-big{display:inline-block;margin-top:6px;padding:3px 12px;border-radius:999px;font-size:13px;font-weight:700}
+.mt-body .chg-big.up{background:var(--up-soft);color:var(--up)}
+.mt-body .chg-big.down{background:var(--down-soft);color:var(--down)}
+.mt-spark{margin:14px auto 2px;display:block}
+.mt-foot{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink3)}
+.mt-foot button{color:var(--brand);font-weight:600;font-size:12.5px}
+.mt-foot button:hover{text-decoration:underline}
+
+/* ===== 时间轴 ===== */
+.timeline{display:grid;gap:0}
+.tl-item{display:grid;grid-template-columns:86px 22px 1fr;grid-column:1/-1;padding:0 0 26px}
+.tl-time{text-align:right;padding-right:14px;font-size:13px;color:var(--ink3);font-weight:600;padding-top:2px}
+.tl-axis{position:relative;display:flex;justify-content:center}
+.tl-axis::before{content:"";position:absolute;top:0;bottom:-26px;width:2px;background:var(--line2)}
+.tl-item:last-child .tl-axis::before{bottom:0}
+.tl-dot{position:relative;z-index:1;width:11px;height:11px;border-radius:50%;background:#fff;border:2.5px solid var(--brand);margin-top:3px}
+.tl-item.todo .tl-dot{border-color:var(--ink3)}
+.tl-body{padding-left:16px}
+.tl-body h4{font-size:15px;font-weight:700;margin-bottom:3px}
+.tl-body .ver{color:var(--brand);font-weight:700;margin-right:8px}
+.tl-body p{font-size:13.5px;color:var(--ink2)}
+.tl-item.gold .tl-dot{border-color:var(--gold)}
+.tl-item.gold .tl-body .ver{color:var(--gold)}
+
+/* ===== MeinaOS 卡片 ===== */
+.mo-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.mo-card h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.mo-card h3 .dot{width:8px;height:8px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px var(--brand-soft)}
+.ai-chat-demo{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px}
+.ai-chat-demo .bar{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink3);margin-bottom:12px}
+.ai-chat-demo .bar .av{width:24px;height:24px;border-radius:8px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center}
+.ai-chat-demo .bar .av svg{width:14px;height:14px;stroke:var(--brand)}
+.progress{height:12px;background:var(--soft2);border-radius:999px;overflow:hidden;margin-bottom:8px}
+.progress i{display:block;height:100%;border-radius:999px;background:var(--brand);width:0;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.prow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);margin-bottom:6px}
+.feature-check{display:grid;gap:9px;margin-top:12px}
+.fc{display:flex;gap:9px;align-items:center;font-size:13.5px;color:var(--ink2)}
+.fc svg{width:16px;height:16px;stroke:var(--down);flex:none}
+.fc.done{color:var(--ink)}
+.form-box{display:grid;gap:12px}
+.form-box label{font-size:13px;color:var(--ink2)}
+.form-box input[type=email]{background:#fff;border:1px solid var(--line2);border-radius:11px;padding:12px 14px;font-size:16px;color:var(--ink);outline:none;width:100%}
+.form-box input[type=email]:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:88px;border:1px solid var(--line2);border-radius:11px;padding:11px 8px;font-size:13px;color:var(--ink2);background:#fff;transition:all .18s}
+.seg button.on{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);font-weight:600}
+.form-box .btn{width:100%}
+
+/* ===== 关于 ===== */
+.story-grid{display:grid;gap:22px}
+.story-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow)}
+.story-card h3{font-size:17px;font-weight:700;margin-bottom:10px}
+.story-card p{font-size:14.5px;color:var(--ink2);margin-bottom:16px}
+.story-card .stat{display:flex;gap:32px;flex-wrap:wrap;margin-top:10px}
+.stat b{font-size:26px;font-weight:800;display:block;color:var(--ink)}
+.stat span{font-size:12px;color:var(--ink3)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chips span{border:1px solid var(--line2);border-radius:999px;padding:6px 13px;font-size:12.5px;color:var(--ink2);background:#fff}
+
+/* ===== 下载 ===== */
+.dl-grid{display:grid;gap:14px;grid-template-columns:1fr}
+.dl-card{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);transition:transform .2s,border-color .2s}
+.dl-card:hover{border-color:var(--brand);transform:translateY(-2px)}
+.dl-card .os-ic{flex:none;width:44px;height:44px;border-radius:12px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center}
+.dl-card .os-ic svg{width:24px;height:24px;fill:var(--brand)}
+.dl-card h3{font-size:15.5px;font-weight:700}
+.dl-card .meta{font-size:12px;color:var(--ink3)}
+.dl-card .btn{margin-left:auto;padding:11px 20px;font-size:14px;flex:none}
+.dl-note{margin-top:16px;font-size:12.5px;color:var(--ink3);text-align:center}
+
+/* ===== AI 向导 ===== */
+.ai-fab{position:fixed;right:18px;bottom:18px;z-index:80;width:58px;height:58px;border-radius:50%;background:var(--brand);border:0;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(46,107,230,.4);transition:transform .2s}
+.ai-fab:hover{transform:scale(1.06)}
+.ai-fab svg{width:26px;height:26px;stroke:#fff;fill:none}
+.ai-fab .ping{position:absolute;top:3px;right:3px;width:11px;height:11px;border-radius:50%;background:var(--up);border:2px solid #fff}
+.ai-panel{position:fixed;right:18px;bottom:88px;z-index:80;width:min(370px,calc(100vw - 36px));background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-lg);display:none;flex-direction:column;overflow:hidden}
+.ai-panel.open{display:flex;animation:rise .25s cubic-bezier(.22,1,.36,1)}
+.ai-phead{display:flex;align-items:center;gap:10px;padding:15px 16px;border-bottom:1px solid var(--line)}
+.ai-phead .avatar{width:36px;height:36px;border-radius:11px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;flex:none}
+.ai-phead .avatar svg{width:20px;height:20px;stroke:var(--brand);fill:none}
+.ai-phead .t{font-weight:700;font-size:14.5px}
+.ai-phead .s{font-size:11.5px;color:var(--ink3)}
+.ai-phead .close{margin-left:auto;width:34px;height:34px;border-radius:9px;color:var(--ink3);font-size:18px;display:flex;align-items:center;justify-content:center}
+.ai-phead .close:hover{background:var(--soft2);color:var(--ink)}
+.ai-chips{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px 2px}
+.ai-chips button{font-size:12px;color:var(--brand);border:1px solid var(--line2);background:#fff;border-radius:999px;padding:7px 12px;transition:all .18s}
+.ai-chips button:hover{border-color:var(--brand);background:var(--brand-soft)}
+.ai-log{flex:1;padding:12px 16px;display:grid;gap:10px;max-height:280px;overflow-y:auto;min-height:150px;background:var(--soft)}
+.msg{max-width:86%;font-size:13.5px;line-height:1.55;padding:10px 13px;border-radius:14px;animation:rise .2s ease}
+.msg.bot{background:#fff;border:1px solid var(--line);color:var(--ink);justify-self:start;border-bottom-left-radius:5px}
+.msg.user{background:var(--brand);color:#fff;justify-self:end;border-bottom-right-radius:5px}
+.msg b{font-weight:700}
+.ai-lead{display:grid;gap:9px;background:#fff;border:1px solid rgba(46,107,230,.4);border-radius:14px;padding:12px;justify-self:stretch;animation:rise .2s ease}
+.ai-lead p{font-size:12.5px;color:var(--ink2)}
+.ai-lead input{background:#fff;border:1px solid var(--line2);border-radius:10px;padding:10px 12px;font-size:16px;color:var(--ink);outline:none}
+.ai-lead input:focus{border-color:var(--brand)}
+.ai-lead button{background:var(--brand);color:#fff;border-radius:10px;padding:10px;font-weight:700;font-size:13px}
+.ai-input{display:flex;gap:10px;padding:12px 16px;border-top:1px solid var(--line)}
+.ai-input input{flex:1;min-width:0;background:#fff;border:1px solid var(--line2);border-radius:11px;padding:11px 13px;font-size:16px;color:var(--ink);outline:none}
+.ai-input input:focus{border-color:var(--brand)}
+.ai-input button{flex:none;width:44px;height:44px;border-radius:12px;background:var(--brand);display:flex;align-items:center;justify-content:center}
+.ai-input button svg{width:18px;height:18px;stroke:#fff;fill:none}
+.ai-hint{padding:0 16px 12px;font-size:11px;color:var(--ink3);text-align:center}
+
+/* ===== Footer ===== */
+footer{background:var(--soft);border-top:1px solid var(--line);padding:36px 0 110px;text-align:center;font-size:12.5px;color:var(--ink3)}
+footer .row{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+footer a{color:var(--ink2)}
+footer a:hover{color:var(--brand)}
+
+/* ===== Toast ===== */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#fff;border:1px solid var(--line2);color:var(--ink);font-size:13.5px;padding:12px 20px;border-radius:12px;opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.22,1,.36,1);z-index:120;box-shadow:var(--shadow-lg);max-width:calc(100vw - 40px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== 响应式 ===== */
+@media (min-width:768px){
+  .nav-links{display:flex}
+  .twin-grid{grid-template-columns:1fr 1fr}
+  .detail-grid{grid-template-columns:1fr 1fr}
+  .mo-grid{grid-template-columns:1fr 1fr}
+  .story-grid{grid-template-columns:1fr 1fr}
+  .dl-grid{grid-template-columns:repeat(3,1fr)}
+  .feat-list{grid-template-columns:1fr}
+}
+@media (min-width:1024px){
+  .feat-list{grid-template-columns:1fr 1fr}
+}
+@media (max-width:767px){
+  .hero{padding:44px 0 60px}
+  section{padding:56px 0}
+  .island-wrap{top:10px;padding-bottom:24px}
+  .dl-card .btn{padding:10px 14px;font-size:13px}
+}
+</style>
+</head>
+<body>
+<!-- ===== 视图：导航 ===== -->
+<header class="site-nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top" onclick="smoothTo('#top',event)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2e6be6" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="6.5" cy="12" r="1.2" fill="#2e6be6" stroke="none"/><path d="M11 12h6"/></svg>
+      <span>dev@work</span>
+    </a>
+    <nav class="nav-links" aria-label="页面导航">
+      <a href="#products" onclick="smoothTo('#products',event)">产品</a>
+      <a href="#tickgold" onclick="smoothTo('#tickgold',event)">TickGold</a>
+      <a href="#meinaos" onclick="smoothTo('#meinaos',event)">MeinaOS</a>
+      <a href="#download" onclick="smoothTo('#download',event)">下载</a>
+    </nav>
+    <div class="nav-right">
+      <button class="btn-sm" onclick="copyQQ()">QQ 群 1130346947</button>
+      <a class="btn-sm" href="https://github.com/mhxy881126/tickgold-public" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===== 视图：Hero + 灵动岛 ===== -->
+<section id="top" class="hero">
+  <div class="island-wrap"><div class="island collapsed" id="island" role="button" tabindex="0" aria-expanded="false" aria-label="灵动岛行情演示">
+    <div class="island-row" id="islandRow">
+      <span class="i-left"><span class="i-dot"></span><span id="iTime" class="num">--:--</span></span>
+      <span id="iTick" class="num">自选 4 · <b class="i-pct up">+1.02%</b></span>
+    </div>
+    <div class="island-expanded" id="islandExp"></div>
+  </div></div>
+  <div class="wrap">
+    <h1>两款桌面小工具，<em>一个独立开发者</em></h1>
+    <p class="sub">TickGold 为「交易者盯盘」而生的跨平台 A 股桌面终端；MeinaOS 是你的 AI 私人助理。均支持 Windows 与 macOS（Apple Silicon / Intel）。</p>
+    <div class="hero-cta">
+      <button class="btn primary" onclick="smoothTo('#tickgold',event)">看看 tickgold</button>
+      <button class="btn ghost" onclick="smoothTo('#meinaos',event)">了解 MeinaOS</button>
+    </div>
+    <div class="platform-badges"><span>Windows</span><span>macOS · Apple Silicon</span><span>macOS · Intel</span></div>
+  </div>
+</section>
+
+<!-- ===== 视图：双子星产品卡 ===== -->
+<section id="products" class="soft">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <h2>我在做的两个产品</h2>
+      <p>一个已经可以下载，一个正在开发。目标都是同一件事：让桌面更趁手。</p>
+    </div>
+    <div class="twin-grid">
+      <article class="twin reveal">
+        <div class="twin-top">
+          <span class="twin-logo gold"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 3 7-8"/><path d="M15 7h4v4"/></svg></span>
+          <span class="twin-name">TickGold</span>
+          <span class="twin-status done">已完成 · 免费下载</span>
+        </div>
+        <div class="twin-tag">为「交易者盯盘」而生</div>
+        <div class="twin-desc">跨平台 A 股桌面终端。比传统交易软件更轻、更快、更专注盘中。</div>
+        <div class="twin-mock">
+          <div class="mock-q"><span>贵州茅台</span><span class="v num up">+0.57%</span></div>
+          <div class="mock-q"><span>Apple</span><span class="v num down">-0.32%</span></div>
+          <div class="mock-q"><span>腾讯控股</span><span class="v num up">+1.32%</span></div>
+        </div>
+        <ul class="check-list gold">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>灵动岛 / 悬浮胶囊常驻</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>A 股 · 港股 · 美股混合自选</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>数据本地保存，不注册</li>
+        </ul>
+        <div class="twin-cta"><a class="btn gold" href="https://github.com/mhxy881126/tickgold-public" target="_blank" rel="noopener">免费下载 TickGold</a></div>
+      </article>
+
+      <article class="twin reveal">
+        <div class="twin-top">
+          <span class="twin-logo blue"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.9L19 9.8l-5.1 1.9L12 16.6l-1.9-4.9L5 9.8l5.1-1.9L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></svg></span>
+          <span class="twin-name">MeinaOS</span>
+          <span class="twin-status beta">内测中 · 2026</span>
+        </div>
+        <div class="twin-tag">AI 私人助理，情感陪伴</div>
+        <div class="twin-desc">常驻系统层，随叫随到。帮你处理琐事，也陪你说说话。</div>
+        <div class="twin-mock">
+          <div class="bubble u">帮我看一眼今天的行情</div>
+          <div class="bubble b">好的，自选 4 只里 3 只翻红：茅台 +0.57%，腾讯 +1.32%，BTC +2.1%。</div>
+        </div>
+        <ul class="check-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>系统级唤起，不打断工作</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>多轮对话 · 本地优先</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>多模态与自动化（规划中）</li>
+        </ul>
+        <div class="twin-cta"><button class="btn primary" onclick="smoothTo('#beta',event)">申请内测</button></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：tickgold 详情 ===== -->
+<section id="tickgold">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2>TickGold：为交易者盯盘而生</h2>
+      <p>跨平台 A 股桌面终端，比传统交易软件更轻、更快、更专注盘中——行情浮在灵动岛上，不打扰你。</p>
+    </div>
+    <div class="detail-grid">
+      <div class="feat-list reveal">
+        <div class="feat gold">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="6.5" cy="12" r="1.2" fill="#c08a1e" stroke="none"/><path d="M11 12h6"/></svg></span>
+          <div><h3>灵动岛悬浮监控</h3><p>macOS 灵动岛与 Windows 悬浮胶囊，常驻桌面边缘，伸手即得。</p></div>
+        </div>
+        <div class="feat gold">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/><path d="M12 7v5l3 2"/></svg></span>
+          <div><h3>涨跌即时提醒</h3><p>价格与涨跌幅实时跳动，阈值触发桌面提醒，不错过关键波动。</p></div>
+        </div>
+        <div class="feat gold">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="18" r="2.4"/></svg></span>
+          <div><h3>多市场自选</h3><p>A 股、港股、美股一屏混合自选，同一套交互统一管理。</p></div>
+        </div>
+        <div class="feat gold">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+          <div><h3>数据本地保存</h3><p>自选与设置仅存本地，不注册、不登录，隐私优先。</p></div>
+        </div>
+      </div>
+      <div class="mini-ticker reveal">
+        <div class="mt-head" id="mtTabs">
+          <button class="mt-tab on" data-k="0">600519 茅台</button>
+          <button class="mt-tab" data-k="1">AAPL</button>
+          <button class="mt-tab" data-k="2">00700 腾讯</button>
+          <button class="mt-tab" data-k="3">BTC</button>
+        </div>
+        <div class="mt-body">
+          <div class="code num" id="mtCode">SH · 600519</div>
+          <div class="name" id="mtName">贵州茅台</div>
+          <div class="price num" id="mtPrice">1,458.2</div>
+          <div class="chg-big up num" id="mtChg">+0.57%</div>
+          <svg class="mt-spark" id="mtSpark" width="100%" height="64" viewBox="0 0 300 64" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="mt-foot">
+          <span>示例行情 · 每 2.4 秒模拟跳动</span>
+          <button onclick="toast('原型：同步到灵动岛已触发（演示）')">同步到灵动岛</button>
+        </div>
+      </div>
+    </div>
+    <div style="height:48px"></div>
+    <div class="sec-head reveal" style="margin-bottom:22px">
+      <h2>长期打磨，持续迭代</h2>
+      <p>版本时间线为示例，正式上线时替换为真实发布记录。</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="tl-item gold">
+        <div class="tl-time">2024 · v1.0</div>
+        <div class="tl-axis"><span class="tl-dot"></span></div>
+        <div class="tl-body"><h4><span class="ver">首发</span>桌面悬浮窗 + 自选股提醒</h4><p>第一个可用版本，主打不打断工作流。</p></div>
+      </div>
+      <div class="tl-item gold">
+        <div class="tl-time">2025 · v1.4</div>
+        <div class="tl-axis"><span class="tl-dot"></span></div>
+        <div class="tl-body"><h4><span class="ver">灵动岛版</span>系统级悬浮 + 多市场</h4><p>接入 macOS 灵动岛，支持 A 股 / 港股 / 美股混合自选。</p></div>
+      </div>
+      <div class="tl-item todo gold">
+        <div class="tl-time">2026 · v2.0</div>
+        <div class="tl-axis"><span class="tl-dot"></span></div>
+        <div class="tl-body"><h4><span class="ver">规划中</span>策略提醒 · 数据本地化增强</h4><p>阈值策略、通知中心集成，持续优化低占用体验。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：MeinaOS 详情 ===== -->
+<section id="meinaos" class="soft">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2>MeinaOS：AI 私人助理</h2>
+      <p>正在开发的桌面 AI 私人助理，情感陪伴，随叫随到。右下角的对话助手，就是它的网页演示分身，现在就可以试着问问。</p>
+    </div>
+    <div class="mo-grid" style="display:grid;gap:22px">
+      <div class="mo-card reveal">
+        <h3><span class="dot"></span>对话演示</h3>
+        <div class="ai-chat-demo">
+          <div class="bar"><span class="av"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.9L19 9.8l-5.1 1.9L12 16.6l-1.9-4.9L5 9.8l5.1-1.9L12 3z"/></svg></span>MeinaOS · 网页演示</div>
+          <div class="bubble u">帮我盯一下茅台，到 1480 提醒我</div>
+          <div class="bubble b">已设置提醒：贵州茅台 ≥ 1480 元时桌面通知。现在 1458.2，还差 1.5%。</div>
+          <div class="bubble u">再看看今天的待办</div>
+          <div class="bubble b">今天 3 件事：盘前更新自选（9:00）、例会、回复两条消息。</div>
+        </div>
+        <div class="feature-check">
+          <div class="fc done"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>系统级常驻与唤起</div>
+          <div class="fc done"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>多轮对话核心引擎</div>
+          <div class="fc"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>多模态输入（进行中）</div>
+          <div class="fc"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>跨应用自动化（规划中）</div>
+        </div>
+      </div>
+      <div style="display:grid;gap:22px">
+        <div class="mo-card reveal">
+          <h3><span class="dot"></span>开发进度</h3>
+          <div class="progress"><i id="moBar"></i></div>
+          <div class="prow"><span>核心对话能力</span><b class="num">62%</b></div>
+          <div class="fc" style="margin-top:8px">进度为示意值，代表当前阶段，非精确度量。</div>
+        </div>
+        <div class="mo-card reveal">
+          <h3><span class="dot"></span>Roadmap</h3>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-time">Q3 2025</div>
+              <div class="tl-axis"><span class="tl-dot"></span></div>
+              <div class="tl-body"><h4>概念验证</h4><p>交互原型与核心链路跑通。</p></div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-time">Q4 2025</div>
+              <div class="tl-axis"><span class="tl-dot"></span></div>
+              <div class="tl-body"><h4>核心对话 · 进行中</h4><p>系统级常驻、多轮对话、本地优先。</p></div>
+            </div>
+            <div class="tl-item todo">
+              <div class="tl-time">2026</div>
+              <div class="tl-axis"><span class="tl-dot"></span></div>
+              <div class="tl-body"><h4>多模态 · 自动化</h4><p>语音与图像输入，跨应用任务编排。</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mo-card reveal" id="beta">
+        <h3><span class="dot"></span>申请内测</h3>
+        <p style="font-size:13.5px;color:var(--ink2);margin-bottom:10px">MeinaOS 内测申请与进度交流，都在 QQ 交流群：</p>
+        <div style="background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;margin-bottom:14px">
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:6px">QQ 交流群</div>
+          <div class="num" style="font-size:30px;font-weight:800;letter-spacing:2px;color:var(--brand)">1130346947</div>
+        </div>
+        <button class="btn primary" style="width:100%" onclick="copyQQ()">复制群号，去 QQ 加群</button>
+        <p style="font-size:12px;color:var(--ink3);text-align:center;margin-top:10px">进群即可第一时间获取内测资格 · 原型中不会真实入群</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：关于 ===== -->
+<section id="story">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2>一个人，两台系统，两个产品</h2>
+      <p>产品自己设计、自己写、自己维护，长期迭代是常态。</p>
+    </div>
+    <div class="story-grid">
+      <div class="story-card reveal">
+        <h3>为什么做工具</h3>
+        <p>每天要盯盘、又要处理琐事，与其等别人做，不如自己做趁手的工具。tickgold 解决"瞄一眼行情"，MeinaOS 解决"少一点重复"。</p>
+        <div class="stat">
+          <div><b class="num">2</b><span>个桌面产品</span></div>
+          <div><b class="num">2</b><span>大系统平台</span></div>
+          <div><b class="num">∞</b><span>持续迭代中</span></div>
+        </div>
+      </div>
+      <div class="story-card reveal">
+        <h3>平台与技术</h3>
+        <div class="chips">
+          <span>Windows</span><span>macOS · Apple Silicon</span><span>macOS · Intel</span><span>长期迭代</span><span>独立开发</span>
+        </div>
+        <p style="margin-bottom:0">有问题或建议，欢迎直接交流：</p>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+          <button class="btn ghost sm" onclick="copyQQ()">QQ 交流群</button>
+          <a class="btn ghost sm" href="https://github.com/mhxy881126/tickgold-public" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 视图：下载 ===== -->
+<section id="download" class="soft">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <h2>选择你的平台</h2>
+      <p>TickGold 已完成，可立即体验；MeinaOS 开发中，申请内测等通知。</p>
+    </div>
+    <div class="dl-grid">
+      <div class="dl-card reveal">
+        <span class="os-ic"><svg viewBox="0 0 24 24"><path d="M0 3.45 9.75-.29v11.06H0V3.45zm10.75-.34L21.75-.29v12.06H10.75V3.1zM0 12.3h9.75v11.06L0 19.28V12.3zm10.75.03h11V19.2l-11 3.79V12.33z"/></svg></span>
+        <div><h3>Windows</h3><div class="meta">x64 安装包 · 当前 v2.1（示例）</div></div>
+        <a class="btn primary" href="https://github.com/mhxy881126/tickgold-public" target="_blank" rel="noopener">下载</a>
+      </div>
+      <div class="dl-card reveal">
+        <span class="os-ic"><svg viewBox="0 0 24 24"><path d="M12.15 6.9c-.95 0-2.42-1.08-3.96-1.04-2.04.03-3.91 1.18-4.96 3.01-2.12 3.68-.55 9.1 1.52 12.09 1.01 1.45 2.21 3.09 3.79 3.03 1.52-.07 2.09-.99 3.94-.99 1.83 0 2.35.99 3.96.95 1.64-.03 2.68-1.48 3.68-2.95 1.15-1.69 1.63-3.33 1.66-3.42-.04-.01-3.18-1.22-3.22-4.85-.03-3.04 2.48-4.47 2.6-4.55-1.43-2.09-3.62-2.32-4.39-2.38-2-.15-3.68 1.09-4.62 1.09zm3.38-3.07c.84-1.01 1.4-2.43 1.25-3.83-1.21.05-2.66.8-3.53 1.82-.78.9-1.45 2.34-1.27 3.71 1.34.1 2.72-.69 3.55-1.7z"/></svg></span>
+        <div><h3>macOS · Apple Silicon</h3><div class="meta">M 系列芯片 · .dmg 当前 v2.1（示例）</div></div>
+        <a class="btn primary" href="https://github.com/mhxy881126/tickgold-public" target="_blank" rel="noopener">下载</a>
+      </div>
+      <div class="dl-card reveal">
+        <span class="os-ic"><svg viewBox="0 0 24 24"><path d="M12.15 6.9c-.95 0-2.42-1.08-3.96-1.04-2.04.03-3.91 1.18-4.96 3.01-2.12 3.68-.55 9.1 1.52 12.09 1.01 1.45 2.21 3.09 3.79 3.03 1.52-.07 2.09-.99 3.94-.99 1.83 0 2.35.99 3.96.95 1.64-.03 2.68-1.48 3.68-2.95 1.15-1.69 1.63-3.33 1.66-3.42-.04-.01-3.18-1.22-3.22-4.85-.03-3.04 2.48-4.47 2.6-4.55-1.43-2.09-3.62-2.32-4.39-2.38-2-.15-3.68 1.09-4.62 1.09zm3.38-3.07c.84-1.01 1.4-2.43 1.25-3.83-1.21.05-2.66.8-3.53 1.82-.78.9-1.45 2.34-1.27 3.71 1.34.1 2.72-.69 3.55-1.7z"/></svg></span>
+        <div><h3>macOS · Intel</h3><div class="meta">Intel 芯片 · .dmg 当前 v2.1（示例）</div></div>
+        <a class="btn primary" href="https://github.com/mhxy881126/tickgold-public" target="_blank" rel="noopener">下载</a>
+      </div>
+    </div>
+    <p class="dl-note reveal">原型演示：下载入口为占位，正式上线将直链 GitHub Releases。版本号与安装包为示例。</p>
+  </div>
+</section>
+
+<!-- ===== 视图：AI 向导 ===== -->
+<button class="ai-fab" id="aiFab" aria-label="打开 MeinaOS AI 向导" onclick="toggleAI(true)">
+  <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.9L19 9.8l-5.1 1.9L12 16.6l-1.9-4.9L5 9.8l5.1-1.9L12 3z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15z"/></svg>
+  <span class="ping"></span>
+</button>
+<div class="ai-panel" id="aiPanel" role="dialog" aria-label="MeinaOS AI 向导对话">
+  <div class="ai-phead">
+    <span class="avatar"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.9L19 9.8l-5.1 1.9L12 16.6l-1.9-4.9L5 9.8l5.1-1.9L12 3z"/></svg></span>
+    <div><div class="t">MeinaOS · AI 向导</div><div class="s">网页演示分身 · 随时待命</div></div>
+    <button class="close" aria-label="关闭" onclick="toggleAI(false)">×</button>
+  </div>
+  <div class="ai-chips" id="aiChips">
+    <button data-q="这个网站是做什么的？">这个网站是做什么的？</button>
+    <button data-q="怎么下载 TickGold？">怎么下载 TickGold？</button>
+    <button data-q="支持哪些系统？">支持哪些系统？</button>
+    <button data-q="MeinaOS 什么时候上线？">MeinaOS 什么时候上线？</button>
+  </div>
+  <div class="ai-log" id="aiLog"></div>
+  <div class="ai-input">
+    <input id="aiInput" type="text" placeholder="问点什么…" autocomplete="off" aria-label="输入问题">
+    <button id="aiSend" aria-label="发送" onclick="sendAI()"><svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></button>
+  </div>
+  <div class="ai-hint">演示分身使用预设知识库回答 · 原型不接入真实 AI</div>
+</div>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <div class="row">
+    <a href="#top" onclick="smoothTo('#top',event)">返回顶部</a>
+    <a href="https://github.com/mhxy881126/tickgold-public" target="_blank" rel="noopener">GitHub</a>
+    <a href="#" onclick="event.preventDefault();copyQQ()">QQ 交流群：1130346947</a>
+  </div>
+  <div>© 2026 dev@work · TickGold &amp; MeinaOS · 本站为交互原型演示</div>
+</footer>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+/* ===== 工具 ===== */
+function $(id){return document.getElementById(id);}
+var toastEl=$('toast'),toastTimer=null;
+window.toast=function(msg){
+  toastEl.textContent=msg;toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2600);
+};
+window.smoothTo=function(sel,ev){
+  if(ev){ev.preventDefault();}
+  var el=document.querySelector(sel);
+  if(el){el.scrollIntoView({behavior:'smooth',block:'start'});}
+};
+
+/* ===== 示例行情数据（演示用，非实时） ===== */
+var BASES=[
+  {code:'600519',name:'贵州茅台',market:'SH',px:1458.20,hist:[1450,1453,1458,1462,1457,1455,1461,1466,1460,1456,1462,1458]},
+  {code:'AAPL',name:'Apple',market:'US',px:232.45,hist:[233.2,233.8,232.9,232.1,231.5,232.0,231.8,232.4,231.6,231.9,232.3,232.45]},
+  {code:'00700',name:'腾讯控股',market:'HK',px:428.60,hist:[423,424,426,425,427,429,428,430,431,429,428,428.6]},
+  {code:'BTC',name:'Bitcoin',market:'CR',px:67240,hist:[65800,66100,66400,66000,66800,67000,67400,67100,67600,67800,67500,67240]}
+];
+var MT_K=0;
+
+/* ===== 灵动岛 ===== */
+var island=$('island'),islandExp=$('islandExp'),islandRow=$('islandRow');
+function islandOpen(){return island.classList.contains('open');}
+function rowHTML(t){
+  var cls=t.chg>=0?'up':'down';
+  return '<div class="i-row"><span class="nm">'+t.name+'<span class="cd">'+t.market+' · '+t.code+'</span></span><span class="px num">'+fmt(t.px)+'</span><span class="chg '+cls+' num">'+(t.chg>=0?'+':'')+t.chg.toFixed(2)+'%</span></div>';
+}
+function renderIslandRow(){
+  var tot=BASES.reduce(function(s,t){return s+t.chg;},0)/BASES.length;
+  var cls=tot>=0?'up':'down';
+  islandRow.innerHTML='<span class="i-left"><span class="i-dot"></span><span id="iTime" class="num"></span></span><span id="iTick" class="num">自选 4 · <b class="i-pct '+cls+'">'+(tot>=0?'+':'')+tot.toFixed(2)+'%</b></span>';
+  startClock($('iTime'));
+}
+function updateIslandData(){
+  var tot=BASES.reduce(function(s,t){return s+t.chg;},0)/BASES.length;
+  var cls=tot>=0?'up':'down';
+  var tickEl=$('iTick');
+  if(tickEl){tickEl.innerHTML='自选 4 · <b class="i-pct '+cls+'">'+(tot>=0?'+':'')+tot.toFixed(2)+'%</b>';}
+  if(islandOpen()){
+    var lst=islandExp.querySelector('.i-list');
+    if(lst){lst.innerHTML=BASES.map(rowHTML).join('');}
+  }
+}
+function renderIslandExpanded(){
+  islandExp.innerHTML='<div class="i-head"><span>自选行情</span><span class="badge-demo">网页演示 · 示例数据</span></div><div class="i-list">'+BASES.map(rowHTML).join('')+'</div><div class="i-actions"><a class="btn primary" href="https://github.com/mhxy881126/tickgold-public" target="_blank" rel="noopener">下载 TickGold</a><button class="btn ghost" onclick="toggleIsland(false)">收起</button></div>';
+}
+window.toggleIsland=function(force){
+  var open=force!==undefined?force:!islandOpen();
+  island.classList.toggle('open',open);
+  island.classList.toggle('collapsed',!open);
+  island.setAttribute('aria-expanded',open?'true':'false');
+  if(open){renderIslandExpanded();}
+};
+islandRow.addEventListener('click',function(){toggleIsland();});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){toggleIsland(false);toggleAI(false);}
+  if(e.key==='Enter'&&e.target===island){toggleIsland();}
+});
+
+/* ===== 时间与行情模拟 ===== */
+function nowTime(){
+  var d=new Date();
+  return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+}
+function startClock(el){
+  if(!el||el._t)return;
+  el.textContent=nowTime();
+  el._t=setInterval(function(){el.textContent=nowTime();},10000);
+}
+function fmt(px){
+  var s=px>=1000?px.toFixed(1):px.toFixed(2);
+  return s.replace(/\B(?=(\d{3})+(?!\d))/g,',');
+}
+function tick(){
+  for(var i=0;i<BASES.length;i++){
+    var t=BASES[i];
+    t.px*=(1+(Math.random()-0.5)*0.004);
+    t.chg=(t.px-t.hist[0])/t.hist[0]*100;
+  }
+  updateIslandData();
+  renderMiniBody();
+}
+setInterval(tick,2400);
+
+/* ===== 迷你行情窗口 ===== */
+function sparkPath(h){
+  var min=Math.min.apply(null,h),max=Math.max.apply(null,h),span=(max-min)||1;
+  var pts=h.map(function(v,i){
+    var x=i/(h.length-1)*300,y=60-(v-min)/span*52;
+    return x.toFixed(1)+','+y.toFixed(1);
+  }).join(' ');
+  return '<polyline points="'+pts+'" fill="none" stroke="'+(h[h.length-1]>=h[0]?'#e5483b':'#16a36b')+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+function renderMiniBody(){
+  var t=BASES[MT_K];
+  var cls=t.chg>=0?'up':'down';
+  $('mtCode').textContent=(t.market==='CR'?'CRYPTO ·':(t.market+' · '))+t.code;
+  $('mtName').textContent=t.name;
+  $('mtPrice').textContent=fmt(t.px);
+  var chgEl=$('mtChg');
+  chgEl.textContent=(t.chg>=0?'+':'')+t.chg.toFixed(2)+'%';
+  chgEl.className='chg-big '+cls+' num';
+  var hk=t.hist.slice();hk.push(t.px);
+  $('mtSpark').innerHTML=sparkPath(hk);
+}
+(function initTabs(){
+  var tabs=document.querySelectorAll('#mtTabs .mt-tab');
+  for(var i=0;i<tabs.length;i++){
+    (function(idx){
+      tabs[idx].addEventListener('click',function(){
+        for(var k=0;k<tabs.length;k++){tabs[k].classList.remove('on');}
+        tabs[idx].classList.add('on');
+        MT_K=idx;renderMiniBody();
+      });
+    })(i);
+  }
+})();
+
+/* ===== 滚动揭示 + 进度条 ===== */
+var revealObs;
+if('IntersectionObserver' in window){
+  revealObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){en.target.classList.add('in');revealObs.unobserve(en.target);}
+    });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){revealObs.observe(el);});
+  var moObs=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){var bar=$('moBar');if(bar){bar.style.width='62%';}}
+    });
+  },{threshold:.3});
+  moObs.observe($('meinaos'));
+}else{
+  document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});
+  var bar0=$('moBar');if(bar0){bar0.style.width='62%';}
+}
+
+/* ===== 复制 QQ 群号 ===== */
+window.copyQQ=function(){
+  var n='1130346947';
+  function done(){toast('已复制群号 '+n+'，打开 QQ 搜索即可加入');}
+  function fallback(){
+    var ta=document.createElement('textarea');
+    ta.value=n;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');done();}
+    catch(e){toast('QQ 交流群：'+n+'（请手动复制）');}
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(n).then(done,fallback);
+  }else{fallback();}
+};
+
+/* ===== AI 向导 ===== */
+window.toggleAI=function(force){
+  var open=force!==undefined?force:!$('aiPanel').classList.contains('open');
+  $('aiPanel').classList.toggle('open',open);
+};
+var aiLog=$('aiLog');
+function botMsg(html){
+  var d=document.createElement('div');
+  d.className='msg bot';d.innerHTML=html;
+  aiLog.appendChild(d);aiLog.scrollTop=aiLog.scrollHeight;
+}
+function userMsg(t){
+  var d=document.createElement('div');
+  d.className='msg user';d.textContent=t;
+  aiLog.appendChild(d);aiLog.scrollTop=aiLog.scrollHeight;
+}
+function leadForm(){
+  var d=document.createElement('div');
+  d.className='ai-lead';
+  d.innerHTML='<p>MeinaOS 内测申请与进度交流，请加入 QQ 交流群：<b class="num" style="letter-spacing:1px">1130346947</b></p><button onclick="copyQQ()">复制群号，去 QQ 加群</button>';
+  aiLog.appendChild(d);aiLog.scrollTop=aiLog.scrollHeight;
+}
+var KB=[
+  {kw:['做','什么','介绍','网站'],ans:'这是我的个人作品集网站：<b>TickGold</b> 跨平台 A 股桌面终端（已完成）和 <b>MeinaOS</b> AI 私人助理（开发中），都支持 Windows 与 macOS。'},
+  {kw:['下载','tickgold','怎么拿','安装','github'],ans:'TickGold 已完成，支持 Windows / macOS（Apple Silicon / Intel）。下载请访问 GitHub：<b>github.com/mhxy881126/tickgold-public</b>，页面任一「下载」按钮都会直接跳转。'},
+  {kw:['mac','window','系统','架构','silicon','intel','平台'],ans:'两个产品都支持 <b>Windows</b> 和 <b>macOS</b>（Apple Silicon 与 Intel 双架构）。'},
+  {kw:['上线','内测','什么时候','进度','开发中','qq','群'],ans:'MeinaOS 正在开发中（核心对话能力约 62%，示意），暂未开放下载。内测申请与进度交流请加入 <b>QQ 交流群：1130346947</b>，进群即可第一时间获取资格。'},
+  {kw:['价格','收费','免费','钱','订阅'],ans:'TickGold 当前免费下载体验；MeinaOS 计划免费基础版 + 可选订阅（原型阶段定价示意）。'},
+  {kw:['你好','hi','hello','嗨','在吗'],ans:'你好，我是 MeinaOS 的网页演示分身。可以问我：这个网站是做什么的？怎么下载 TickGold？MeinaOS 什么时候上线？'}
+];
+function matchKB(t){
+  for(var i=0;i<KB.length;i++){
+    for(var j=0;j<KB[i].kw.length;j++){
+      if(t.indexOf(KB[i].kw[j])!==-1)return KB[i];
+    }
+  }
+  return null;
+}
+window.sendAI=function(preset){
+  var inp=$('aiInput');
+  var t=(preset||inp.value).trim();
+  if(!t){return;}
+  userMsg(t);
+  inp.value='';
+  setTimeout(function(){
+    var hit=matchKB(t);
+    if(hit){botMsg(hit.ans);}
+    else{botMsg('这个问题我还没学会——我是原型中的预设知识库。试试上面的快捷问题，或问「MeinaOS 什么时候上线」。');}
+    if(hit&&hit.kw.indexOf('内测')!==-1){leadForm();}
+  },420);
+};
+(function(){
+  $('aiSend').addEventListener('click',function(){sendAI();});
+  $('aiInput').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){sendAI();}
+  });
+  var chips=document.querySelectorAll('#aiChips button');
+  for(var i=0;i<chips.length;i++){
+    chips[i].addEventListener('click',function(){sendAI(this.getAttribute('data-q'));});
+  }
+})();
+botMsg('你好，我是 <b>MeinaOS</b> 的网页演示分身。这个网站的作品、进度、下载方式，都可以问我。');
+
+/* ===== 初始化 ===== */
+(function(){
+  for(var i=0;i<BASES.length;i++){
+    BASES[i].chg=(BASES[i].px-BASES[i].hist[0])/BASES[i].hist[0]*100;
+  }
+})();
+renderIslandRow();
+renderIslandExpanded();
+renderMiniBody();
+})();
+</script>
+</body>
+</html>
